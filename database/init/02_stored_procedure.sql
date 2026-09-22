@@ -3,7 +3,7 @@ RETURNS TABLE (
     customer_id UUID,
     total_orders BIGINT,
     total_spent NUMERIC,
-    last_order_date TIMESTAMP
+    last_order_date TIMESTAMPTZ
 )
 LANGUAGE plpgsql
 AS $$

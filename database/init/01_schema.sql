@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS products (
 CREATE TABLE IF NOT EXISTS orders (
     id UUID PRIMARY KEY,
     customer_id UUID NOT NULL REFERENCES customers (id),
-    order_date TIMESTAMP NOT NULL,
+    order_date TIMESTAMPTZ NOT NULL,
     status VARCHAR(20) NOT NULL
 );
 

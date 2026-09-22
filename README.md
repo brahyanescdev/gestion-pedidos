@@ -41,7 +41,7 @@ Servicios expuestos:
 
 - Frontend: http://localhost:8081
 - API: http://localhost:8080 (Swagger en http://localhost:8080/swagger)
-- PostgreSQL: localhost:5432 (usuario/clave `pedidos`/`pedidos`, base `pedidos`)
+- PostgreSQL: localhost:5433 (usuario/clave `pedidos`/`pedidos`, base `pedidos`)
 
 Al iniciar, PostgreSQL ejecuta automáticamente los scripts de `database/init/` (esquema, índices, procedimiento almacenado y datos de ejemplo).
 

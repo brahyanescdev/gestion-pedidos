@@ -20,7 +20,8 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
             .HasColumnName("customer_id");
 
         builder.Property(order => order.OrderDate)
-            .HasColumnName("order_date");
+            .HasColumnName("order_date")
+            .HasColumnType("timestamptz");
 
         builder.Property(order => order.Status)
             .HasColumnName("status")
