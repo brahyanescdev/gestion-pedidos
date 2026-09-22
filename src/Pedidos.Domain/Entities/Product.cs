@@ -4,6 +4,8 @@ namespace Pedidos.Domain.Entities;
 
 public class Product
 {
+    public const int MaxNameLength = 200;
+
     public Guid Id { get; private set; }
     public string Name { get; private set; }
     public decimal Price { get; private set; }
@@ -24,6 +26,11 @@ public class Product
         if (string.IsNullOrWhiteSpace(name))
         {
             throw new DomainException("El nombre del producto es obligatorio.");
+        }
+
+        if (name.Trim().Length > MaxNameLength)
+        {
+            throw new DomainException($"El nombre del producto no puede superar los {MaxNameLength} caracteres.");
         }
 
         if (price <= 0)
@@ -57,5 +64,15 @@ public class Product
         }
 
         Stock -= quantity;
+    }
+
+    public void Release(int quantity)
+    {
+        if (quantity <= 0)
+        {
+            throw new DomainException("La cantidad a liberar debe ser mayor a cero.");
+        }
+
+        Stock += quantity;
     }
 }

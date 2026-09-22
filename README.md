@@ -29,11 +29,15 @@ database/init/              Scripts SQL: esquema, índices, procedimiento almace
 docs/architecture.md         Diagramas de arquitectura
 ```
 
-## Cómo ejecutar la solución completa
+## Cómo correr el proyecto en local
+
+### Opción A: todo con Docker Compose (recomendada)
 
 Requiere Docker y Docker Compose.
 
 ```bash
+git clone https://github.com/brahyanescdev/gestion-pedidos.git
+cd gestion-pedidos
 docker compose up --build
 ```
 
@@ -43,7 +47,26 @@ Servicios expuestos:
 - API: http://localhost:8080 (Swagger en http://localhost:8080/swagger)
 - PostgreSQL: localhost:5433 (usuario/clave `pedidos`/`pedidos`, base `pedidos`)
 
-Al iniciar, PostgreSQL ejecuta automáticamente los scripts de `database/init/` (esquema, índices, procedimiento almacenado y datos de ejemplo).
+Al iniciar, PostgreSQL ejecuta automáticamente los scripts de `database/init/` (esquema, índices, procedimiento almacenado y datos de ejemplo). Para reiniciar con la base de datos limpia:
+
+```bash
+docker compose down -v && docker compose up --build
+```
+
+### Opción B: API en el SDK de .NET + PostgreSQL en Docker
+
+Útil para desarrollar/depurar la API directamente, sin reconstruir la imagen en cada cambio.
+
+1. Levanta sólo la base de datos:
+   ```bash
+   docker compose up -d postgres
+   ```
+2. Corre la API con el SDK de .NET 8:
+   ```bash
+   dotnet run --project src/Pedidos.Api/Pedidos.Api.csproj
+   ```
+   La API toma la cadena de conexión de `src/Pedidos.Api/appsettings.json`, que ya apunta a `localhost:5433` (el puerto expuesto por `docker compose up -d postgres`).
+3. Sirve el frontend estático (por ejemplo con `npx serve frontend` o abriendo `frontend/index.html` directamente) y ajusta `frontend/config.js` si la API no corre en `http://localhost:8080`.
 
 ## Endpoints principales
 
@@ -53,7 +76,8 @@ Al iniciar, PostgreSQL ejecuta automáticamente los scripts de `database/init/` 
 | GET/POST | `/api/products` | Listar / crear productos |
 | GET/POST | `/api/orders` | Listar / crear pedidos |
 | POST | `/api/orders/{id}/confirm` | Confirmar pedido |
-| POST | `/api/orders/{id}/cancel` | Cancelar pedido |
+| POST | `/api/orders/{id}/complete` | Completar pedido confirmado |
+| POST | `/api/orders/{id}/cancel` | Cancelar pedido (libera el stock reservado) |
 | GET | `/api/orders/reports/customer/{customerId}` | Resumen de pedidos por cliente (procedimiento almacenado) |
 
 ## Cómo correr los tests localmente

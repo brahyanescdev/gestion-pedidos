@@ -102,7 +102,6 @@ public class OrderServiceTests
         Assert.Equal(customer.Id, result.CustomerId);
         Assert.Equal(137.70m, result.Total);
         Assert.Equal(7, product.Stock);
-        _productRepository.Verify(repo => repo.UpdateAsync(product, It.IsAny<CancellationToken>()), Times.Once);
         _orderRepository.Verify(repo => repo.AddAsync(It.IsAny<Order>(), It.IsAny<CancellationToken>()), Times.Once);
         _unitOfWork.Verify(uow => uow.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
@@ -170,6 +169,65 @@ public class OrderServiceTests
 
         Assert.Equal("Cancelled", result.Status);
         _orderRepository.Verify(repo => repo.UpdateAsync(order, It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task CancelAsync_RestoresReservedStockForEachItem()
+    {
+        var product = Product.Create("Teclado", 45.90m, 10);
+        product.Reserve(3);
+        var order = Order.Create(Guid.NewGuid(), DateTime.UtcNow);
+        order.AddItem(product.Id, 3, product.Price);
+        order.Confirm();
+
+        _orderRepository
+            .Setup(repo => repo.GetByIdAsync(order.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(order);
+        _productRepository
+            .Setup(repo => repo.GetByIdAsync(product.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(product);
+
+        await _service.CancelAsync(order.Id);
+
+        Assert.Equal(10, product.Stock);
+    }
+
+    [Fact]
+    public async Task CancelAsync_WhenOrderAlreadyCancelled_ThrowsDomainException()
+    {
+        var order = Order.Create(Guid.NewGuid(), DateTime.UtcNow);
+        order.Cancel();
+        _orderRepository
+            .Setup(repo => repo.GetByIdAsync(order.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(order);
+
+        await Assert.ThrowsAsync<DomainException>(() => _service.CancelAsync(order.Id));
+    }
+
+    [Fact]
+    public async Task CompleteAsync_WhenOrderIsConfirmed_CompletesAndPersists()
+    {
+        var order = Order.Create(Guid.NewGuid(), DateTime.UtcNow);
+        order.AddItem(Guid.NewGuid(), 1, 10m);
+        order.Confirm();
+        _orderRepository
+            .Setup(repo => repo.GetByIdAsync(order.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(order);
+
+        var result = await _service.CompleteAsync(order.Id);
+
+        Assert.Equal("Completed", result.Status);
+        _orderRepository.Verify(repo => repo.UpdateAsync(order, It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task CompleteAsync_WhenOrderDoesNotExist_ThrowsNotFoundException()
+    {
+        _orderRepository
+            .Setup(repo => repo.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((Order?)null);
+
+        await Assert.ThrowsAsync<NotFoundException>(() => _service.CompleteAsync(Guid.NewGuid()));
     }
 
     [Fact]

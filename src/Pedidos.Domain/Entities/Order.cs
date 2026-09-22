@@ -77,6 +77,11 @@ public class Order
             throw new DomainException("Un pedido completado no puede cancelarse.");
         }
 
+        if (Status == OrderStatus.Cancelled)
+        {
+            throw new DomainException("El pedido ya está cancelado.");
+        }
+
         Status = OrderStatus.Cancelled;
     }
 

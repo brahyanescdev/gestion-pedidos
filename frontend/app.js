@@ -110,6 +110,9 @@ async function loadOrders() {
       if (order.status === "Pending") {
         actions.push(`<button class="btn btn-sm btn-outline-primary" onclick="confirmOrder('${order.id}')">Confirmar</button>`);
       }
+      if (order.status === "Confirmed") {
+        actions.push(`<button class="btn btn-sm btn-outline-success" onclick="completeOrder('${order.id}')">Completar</button>`);
+      }
       if (order.status === "Pending" || order.status === "Confirmed") {
         actions.push(`<button class="btn btn-sm btn-outline-danger" onclick="cancelOrder('${order.id}')">Cancelar</button>`);
       }
@@ -129,9 +132,15 @@ async function confirmOrder(id) {
   await loadProducts();
 }
 
+async function completeOrder(id) {
+  await apiPost(`/orders/${id}/complete`);
+  await loadOrders();
+}
+
 async function cancelOrder(id) {
   await apiPost(`/orders/${id}/cancel`);
   await loadOrders();
+  await loadProducts();
 }
 
 document.getElementById("customerForm").addEventListener("submit", async (event) => {

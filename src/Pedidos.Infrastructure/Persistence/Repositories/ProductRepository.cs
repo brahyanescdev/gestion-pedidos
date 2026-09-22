@@ -24,10 +24,4 @@ public class ProductRepository : IProductRepository
 
     public async Task AddAsync(Product product, CancellationToken cancellationToken = default)
         => await _context.Products.AddAsync(product, cancellationToken);
-
-    public Task UpdateAsync(Product product, CancellationToken cancellationToken = default)
-    {
-        _context.Products.Update(product);
-        return Task.CompletedTask;
-    }
 }

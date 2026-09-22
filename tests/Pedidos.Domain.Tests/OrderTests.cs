@@ -85,6 +85,15 @@ public class OrderTests
     }
 
     [Fact]
+    public void Cancel_WhenAlreadyCancelled_ThrowsDomainException()
+    {
+        var order = Order.Create(Guid.NewGuid(), DateTime.UtcNow);
+        order.Cancel();
+
+        Assert.Throws<DomainException>(() => order.Cancel());
+    }
+
+    [Fact]
     public void Cancel_WhenCompleted_ThrowsDomainException()
     {
         var order = Order.Create(Guid.NewGuid(), DateTime.UtcNow);

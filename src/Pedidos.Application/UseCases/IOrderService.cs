@@ -9,5 +9,6 @@ public interface IOrderService
     Task<IReadOnlyCollection<OrderDto>> GetAllAsync(CancellationToken cancellationToken = default);
     Task<OrderDto> ConfirmAsync(Guid id, CancellationToken cancellationToken = default);
     Task<OrderDto> CancelAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<OrderDto> CompleteAsync(Guid id, CancellationToken cancellationToken = default);
     Task<OrderSummaryDto?> GetCustomerSummaryAsync(Guid customerId, CancellationToken cancellationToken = default);
 }

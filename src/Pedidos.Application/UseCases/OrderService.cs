@@ -59,11 +59,6 @@ public class OrderService : IOrderService
             order.AddItem(product.Id, item.Quantity, product.Price);
         }
 
-        foreach (var product in productsById.Values)
-        {
-            await _productRepository.UpdateAsync(product, cancellationToken);
-        }
-
         await _orderRepository.AddAsync(order, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -99,6 +94,24 @@ public class OrderService : IOrderService
             ?? throw new NotFoundException(nameof(Order), id);
 
         order.Cancel();
+
+        foreach (var item in order.Items)
+        {
+            var product = await _productRepository.GetByIdAsync(item.ProductId, cancellationToken);
+            product?.Release(item.Quantity);
+        }
+
+        await _orderRepository.UpdateAsync(order, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        return ToDto(order);
+    }
+
+    public async Task<OrderDto> CompleteAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        var order = await _orderRepository.GetByIdAsync(id, cancellationToken)
+            ?? throw new NotFoundException(nameof(Order), id);
+
+        order.Complete();
         await _orderRepository.UpdateAsync(order, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         return ToDto(order);

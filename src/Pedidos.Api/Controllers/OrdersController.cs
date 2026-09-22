@@ -41,6 +41,10 @@ public class OrdersController : ControllerBase
     public async Task<ActionResult<OrderDto>> Cancel(Guid id, CancellationToken cancellationToken)
         => Ok(await _orderService.CancelAsync(id, cancellationToken));
 
+    [HttpPost("{id:guid}/complete")]
+    public async Task<ActionResult<OrderDto>> Complete(Guid id, CancellationToken cancellationToken)
+        => Ok(await _orderService.CompleteAsync(id, cancellationToken));
+
     [HttpGet("reports/customer/{customerId:guid}")]
     public async Task<ActionResult<OrderSummaryDto>> GetCustomerSummary(Guid customerId, CancellationToken cancellationToken)
     {

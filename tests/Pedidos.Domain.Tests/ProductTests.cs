@@ -36,6 +36,14 @@ public class ProductTests
     }
 
     [Fact]
+    public void Constructor_WithNameLongerThanMax_ThrowsDomainException()
+    {
+        var name = new string('a', Product.MaxNameLength + 1);
+
+        Assert.Throws<DomainException>(() => new Product(Guid.NewGuid(), name, 10, 1));
+    }
+
+    [Fact]
     public void Reserve_WithEnoughStock_DecreasesStock()
     {
         var product = Product.Create("Mouse", 19.50m, 10);
@@ -63,5 +71,24 @@ public class ProductTests
         var product = Product.Create("Mouse", 19.50m, 10);
 
         Assert.Throws<DomainException>(() => product.Reserve(0));
+    }
+
+    [Fact]
+    public void Release_IncreasesStock()
+    {
+        var product = Product.Create("Mouse", 19.50m, 5);
+        product.Reserve(3);
+
+        product.Release(3);
+
+        Assert.Equal(5, product.Stock);
+    }
+
+    [Fact]
+    public void Release_WithNonPositiveQuantity_ThrowsDomainException()
+    {
+        var product = Product.Create("Mouse", 19.50m, 10);
+
+        Assert.Throws<DomainException>(() => product.Release(0));
     }
 }

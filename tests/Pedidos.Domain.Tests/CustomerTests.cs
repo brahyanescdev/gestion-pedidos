@@ -39,4 +39,20 @@ public class CustomerTests
     {
         Assert.Throws<DomainException>(() => new Customer(Guid.Empty, "Ana Torres", "ana@example.com"));
     }
+
+    [Fact]
+    public void Constructor_WithNameLongerThanMax_ThrowsDomainException()
+    {
+        var name = new string('a', Customer.MaxNameLength + 1);
+
+        Assert.Throws<DomainException>(() => new Customer(Guid.NewGuid(), name, "ana@example.com"));
+    }
+
+    [Fact]
+    public void Constructor_WithEmailLongerThanMax_ThrowsDomainException()
+    {
+        var email = new string('a', Customer.MaxEmailLength) + "@example.com";
+
+        Assert.Throws<DomainException>(() => new Customer(Guid.NewGuid(), "Ana Torres", email));
+    }
 }

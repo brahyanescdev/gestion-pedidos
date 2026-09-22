@@ -4,6 +4,9 @@ namespace Pedidos.Domain.Entities;
 
 public class Customer
 {
+    public const int MaxNameLength = 200;
+    public const int MaxEmailLength = 200;
+
     public Guid Id { get; private set; }
     public string Name { get; private set; }
     public string Email { get; private set; }
@@ -26,9 +29,19 @@ public class Customer
             throw new DomainException("El nombre del cliente es obligatorio.");
         }
 
+        if (name.Trim().Length > MaxNameLength)
+        {
+            throw new DomainException($"El nombre del cliente no puede superar los {MaxNameLength} caracteres.");
+        }
+
         if (string.IsNullOrWhiteSpace(email) || !email.Contains('@'))
         {
             throw new DomainException("El correo del cliente no es válido.");
+        }
+
+        if (email.Trim().Length > MaxEmailLength)
+        {
+            throw new DomainException($"El correo del cliente no puede superar los {MaxEmailLength} caracteres.");
         }
 
         Id = id;
