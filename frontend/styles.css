@@ -1,0 +1,25 @@
+body {
+  background-color: #f5f6f8;
+}
+
+.tab-content {
+  background-color: #ffffff;
+  border: 1px solid #dee2e6;
+  border-top: none;
+  padding: 1.5rem;
+}
+
+.order-item-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  align-items: center;
+}
+
+.order-item-row select {
+  flex: 2;
+}
+
+.order-item-row input {
+  flex: 1;
+}
