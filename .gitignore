@@ -1,0 +1,8 @@
+bin/
+obj/
+coverage/
+*.user
+.vs/
+.vscode/
+.idea/
+*.DotSettings.user
