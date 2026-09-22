@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestión de Pedidos</title>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <nav class="navbar navbar-dark bg-dark mb-4">
+    <div class="container">
+      <span class="navbar-brand mb-0 h1">Gestión de Pedidos</span>
+    </div>
+  </nav>
+
+  <div class="container">
+    <ul class="nav nav-tabs" id="mainTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#clientes" type="button">Clientes</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#productos" type="button">Productos</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#pedidos" type="button">Pedidos</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#reportes" type="button">Reportes</button>
+      </li>
+    </ul>
+
+    <div class="tab-content py-4">
+      <div class="tab-pane fade show active" id="clientes">
+        <div class="row">
+          <div class="col-md-4">
+            <h5>Nuevo cliente</h5>
+            <form id="customerForm">
+              <div class="mb-2">
+                <label class="form-label">Nombre</label>
+                <input type="text" class="form-control" id="customerName" required />
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Correo</label>
+                <input type="email" class="form-control" id="customerEmail" required />
+              </div>
+              <button type="submit" class="btn btn-primary">Crear cliente</button>
+            </form>
+          </div>
+          <div class="col-md-8">
+            <h5>Clientes registrados</h5>
+            <table class="table table-striped">
+              <thead><tr><th>Nombre</th><th>Correo</th></tr></thead>
+              <tbody id="customersTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-pane fade" id="productos">
+        <div class="row">
+          <div class="col-md-4">
+            <h5>Nuevo producto</h5>
+            <form id="productForm">
+              <div class="mb-2">
+                <label class="form-label">Nombre</label>
+                <input type="text" class="form-control" id="productName" required />
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Precio</label>
+                <input type="number" step="0.01" min="0.01" class="form-control" id="productPrice" required />
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Stock</label>
+                <input type="number" min="0" class="form-control" id="productStock" required />
+              </div>
+              <button type="submit" class="btn btn-primary">Crear producto</button>
+            </form>
+          </div>
+          <div class="col-md-8">
+            <h5>Catálogo de productos</h5>
+            <table class="table table-striped">
+              <thead><tr><th>Nombre</th><th>Precio</th><th>Stock</th></tr></thead>
+              <tbody id="productsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-pane fade" id="pedidos">
+        <div class="row">
+          <div class="col-md-5">
+            <h5>Nuevo pedido</h5>
+            <form id="orderForm">
+              <div class="mb-2">
+                <label class="form-label">Cliente</label>
+                <select class="form-select" id="orderCustomer" required></select>
+              </div>
+              <div id="orderItems"></div>
+              <button type="button" class="btn btn-outline-secondary btn-sm mb-2" id="addItemButton">
+                Agregar producto
+              </button>
+              <div>
+                <button type="submit" class="btn btn-primary">Crear pedido</button>
+              </div>
+            </form>
+          </div>
+          <div class="col-md-7">
+            <h5>Pedidos</h5>
+            <table class="table table-striped">
+              <thead><tr><th>Fecha</th><th>Estado</th><th>Total</th><th>Acciones</th></tr></thead>
+              <tbody id="ordersTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-pane fade" id="reportes">
+        <h5>Resumen de pedidos por cliente</h5>
+        <div class="row">
+          <div class="col-md-4">
+            <select class="form-select mb-2" id="reportCustomer"></select>
+            <button type="button" class="btn btn-primary" id="loadReportButton">Consultar</button>
+          </div>
+          <div class="col-md-8">
+            <div id="reportResult" class="card p-3 d-none">
+              <p class="mb-1"><strong>Total de pedidos:</strong> <span id="reportTotalOrders"></span></p>
+              <p class="mb-1"><strong>Total gastado:</strong> <span id="reportTotalSpent"></span></p>
+              <p class="mb-0"><strong>Último pedido:</strong> <span id="reportLastOrder"></span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
