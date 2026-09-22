@@ -51,6 +51,6 @@ jobs:
 
       - name: Enforce 80% coverage gate on Domain and Application
         run: |
-          LINE_COVERAGE=$(grep "Line coverage:" ./coverage/report/Summary.txt | grep -o "[0-9]*\.[0-9]*" | head -1)
+          LINE_COVERAGE=$(grep "Line coverage:" ./coverage/report/Summary.txt | grep -oE "[0-9]+(\.[0-9]+)?" | head -1)
           echo "Cobertura de línea en Domain+Application: $LINE_COVERAGE%"
           awk -v cov="$LINE_COVERAGE" 'BEGIN { exit !(cov >= 80) }'
